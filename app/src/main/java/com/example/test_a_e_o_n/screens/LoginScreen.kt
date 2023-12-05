@@ -1,5 +1,6 @@
 package com.example.test_a_e_o_n.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -19,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
@@ -29,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.test_a_e_o_n.AccountViewModel
 import com.example.test_a_e_o_n.LoginViewModel
+import com.example.test_a_e_o_n.R
 import com.example.test_a_e_o_n.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,6 +53,7 @@ fun LoginScreen(navController: NavController, accountViewModel: AccountViewModel
             Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            var r = if (loginViewModel.isVisible.value) R.drawable.eye_slash_visible else R.drawable.eye_visible
             Text(
                 text = "Логин",
                 fontSize = 16.sp,
@@ -89,11 +96,25 @@ fun LoginScreen(navController: NavController, accountViewModel: AccountViewModel
                     .clip(RoundedCornerShape(size = 20.dp))
                     .border(width = 2.dp, Color.Black, RoundedCornerShape(size = 20.dp)),
                 visualTransformation ={text ->
-                    var newText = ""
-                    text.text.forEach { _ ->
-                        newText += "*"
+                    if (loginViewModel.isVisible.value){
+                        TransformedText(text,OffsetMapping.Identity)
+                    } else {
+                        var newText = ""
+                        text.text.forEach { _ ->
+                            newText += "*"
+                        }
+                        TransformedText(AnnotatedString(newText), OffsetMapping.Identity)
                     }
-                    TransformedText(AnnotatedString(newText), OffsetMapping.Identity)
+                },
+                trailingIcon = {
+                    Icon(
+                        ImageVector.vectorResource(r), "",
+                        Modifier
+                            .size(30.dp)
+                            .clickable {
+                            loginViewModel.isVisible.value = !loginViewModel.isVisible.value
+                        }
+                    )
                 }
             )
             Text(
@@ -101,7 +122,7 @@ fun LoginScreen(navController: NavController, accountViewModel: AccountViewModel
                 Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()
-                    .heightIn(44.dp,120.dp),
+                    .heightIn(44.dp, 120.dp),
                 color = Color.Red,
                 fontSize = 16.sp
             )

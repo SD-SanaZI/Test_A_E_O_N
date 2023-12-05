@@ -13,6 +13,7 @@ class LoginViewModel : ViewModel() {
     val password = mutableStateOf("")
     val errorMSG = mutableStateOf("")
     val toPayments = mutableStateOf(false)
+    val isVisible = mutableStateOf(false)
 
     fun next(accountViewModel:AccountViewModel){
         val handlerException = CoroutineExceptionHandler{
